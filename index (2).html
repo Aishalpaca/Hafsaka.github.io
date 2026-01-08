@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <title>Countdown להפסקה</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .box {
+      background: #222;
+      padding: 30px 40px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    }
+    h1 {
+      margin-bottom: 15px;
+    }
+    #countdown {
+      font-size: 2em;
+      color: #4caf50;
+      letter-spacing: 2px;
+    }
+    #nextBreak {
+      margin-top: 10px;
+      font-size: 1.2em;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h1>הפסקה הבאה</h1>
+    <div id="countdown">טוען...</div>
+    <div id="nextBreak"></div>
+  </div>
+
+  <script>
+    const breaks = [
+      { start: "09:15", end: "09:35" },
+      { start: "11:00", end: "11:10" },
+      { start: "12:35", end: "12:45" },
+      { start: "14:10", end: "14:15" },
+      { start: "14:55", end: "15:00" }
+    ];
+
+    function pad(n) {
+      return n.toString().padStart(2, '0');
+    }
+
+    function updateCountdown() {
+      const now = new Date();
+
+      for (const b of breaks) {
+        const [h, m] = b.start.split(":").map(Number);
+        const breakTime = new Date();
+        breakTime.setHours(h, m, 0, 0);
+
+        if (breakTime > now) {
+          let diff = breakTime - now;
+
+          const hours = Math.floor(diff / 3600000);
+          diff %= 3600000;
+          const minutes = Math.floor(diff / 60000);
+          const seconds = Math.floor((diff % 60000) / 1000);
+
+          document.getElementById("countdown").textContent =
+            `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+
+          document.getElementById("nextBreak").textContent =
+            `מתחילה ב־${b.start} (עד ${b.end})`;
+          return;
+        }
+      }
+
+      document.getElementById("countdown").textContent =
+        "00:00:00";
+      document.getElementById("nextBreak").textContent = "אין יותר הפסקות היום 😢";
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
+
+</body>
+</html>
